@@ -1,3 +1,3 @@
 import { config } from 'dotenv-safe';
 
-config({ path: '.env' });
+config({ path: '.env', allowEmptyValues: true });
