@@ -1,1 +1,1 @@
-# A very bare-bone Blockchain using Node + Typescript + Jest
+# Bare Blockchain

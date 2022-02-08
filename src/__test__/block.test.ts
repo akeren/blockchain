@@ -3,7 +3,6 @@ import { Block } from '@src/logic/Block';
 describe('Block class', () => {
   const block = new Block(
     1,
-    1,
     Date.now(),
     { amount: 10 },
     '0000000000000000000000000000000000000000000000000000000000000000'
@@ -12,16 +11,16 @@ describe('Block class', () => {
   describe('Constructor', () => {
     it('should aptly save arguments', () => {
       expect(block.index).toBe(1);
-      expect(block.nonce).toBe(1);
+      expect(block.nonce).toBe(block.nonce);
       expect(block.timestamp).toBe(block.timestamp);
       expect(block.data).toEqual({ amount: 10 });
       expect(block.previousHash).toBe('0000000000000000000000000000000000000000000000000000000000000000');
     });
 
     it('should aptly save arguments, without previousHash', () => {
-      const blockWithoutPreviousHash = new Block(2, 2, Date.now(), { amount: 20 });
+      const blockWithoutPreviousHash = new Block(2, Date.now(), { amount: 20 });
       expect(blockWithoutPreviousHash.index).toBe(2);
-      expect(blockWithoutPreviousHash.nonce).toBe(2);
+      expect(blockWithoutPreviousHash.nonce).toBe(blockWithoutPreviousHash.nonce);
       expect(blockWithoutPreviousHash.timestamp).toBe(blockWithoutPreviousHash.timestamp);
       expect(blockWithoutPreviousHash.data).toEqual({ amount: 20 });
       expect(blockWithoutPreviousHash.previousHash).toBeUndefined();
@@ -47,14 +46,9 @@ describe('Block class', () => {
 
     it('should correctly hash block with SHA256', () => {
       expect(
-        new Block(
-          1,
-          1,
-          1644283664558,
-          { amount: 10 },
-          '0000000000000000000000000000000000000000000000000000000000000000'
-        ).hash
-      ).toEqual('7040984f81cd3152d7ac1588a8e19172944fe0cfde161ea0c9c3cee56483823f');
+        new Block(1, 1644283664558, { amount: 10 }, '0000000000000000000000000000000000000000000000000000000000000000')
+          .hash
+      ).toEqual('e6b40e9df9f808824f4c6059833ccfd43a714eecc46ed4e555a9a4d0a277f327');
     });
 
     it('should set hash property', () => {
@@ -88,7 +82,7 @@ describe('Block class', () => {
   });
 
   it('should correctly have all the block properties, without previousHash', () => {
-    const blockWithoutPreviousHash = new Block(2, 2, Date.now(), { amount: 20 });
+    const blockWithoutPreviousHash = new Block(2, Date.now(), { amount: 20 });
     const { index, hash, nonce, timestamp, data } = blockWithoutPreviousHash;
 
     expect.objectContaining({
