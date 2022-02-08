@@ -14,9 +14,9 @@ export class Block implements IBlock {
 
   public previousHash?: string;
 
-  constructor(index: number, nonce: number, timestamp: number, data: any, previousHash?: string) {
+  constructor(index: number, timestamp: number, data: any, previousHash?: string) {
     this.index = index;
-    this.nonce = nonce;
+    this.nonce = 0;
     this.timestamp = timestamp;
     this.data = data;
     this.previousHash = previousHash;
@@ -26,8 +26,17 @@ export class Block implements IBlock {
   hashBlock(): string {
     const hash = createHash('sha256');
 
-    hash.update(this.index + this.timestamp + JSON.stringify(this.data) + this.previousHash);
+    hash.update(this.index + this.timestamp + JSON.stringify(this.data) + this.previousHash + this.nonce);
 
     return hash.digest('hex');
+  }
+
+  mineBlock(difficulty: number): void {
+    while (this.hash.substring(0, difficulty) !== Array(difficulty + 1).join('0')) {
+      this.nonce += 1;
+      this.hash = this.hashBlock();
+    }
+
+    console.log(`Block mined: ${this.hash}`);
   }
 }

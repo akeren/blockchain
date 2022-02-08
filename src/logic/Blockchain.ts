@@ -3,12 +3,15 @@ import { Block } from '@src/logic/Block';
 export class Blockchain {
   public chain: Block[];
 
-  constructor() {
+  public difficulty: number;
+
+  constructor(difficulty = 2) {
     this.chain = [Blockchain.createGenesisBlock()];
+    this.difficulty = difficulty;
   }
 
   private static createGenesisBlock(): Block {
-    return new Block(0, 0, Date.now(), 'Genesis block', Blockchain.genesisPreviousHash());
+    return new Block(0, Date.now(), 'Genesis block', Blockchain.genesisPreviousHash());
   }
 
   getLatestBlock(): Block {
@@ -18,8 +21,8 @@ export class Blockchain {
   addBlock(block: Block): void {
     // eslint-disable-next-line no-param-reassign
     block.previousHash = this.getLatestBlock().hash;
-    // eslint-disable-next-line no-param-reassign
-    block.hash = block.hashBlock();
+
+    block.mineBlock(this.difficulty);
 
     this.chain.push(block);
   }
