@@ -22,8 +22,11 @@ if (config.app.env === 'development') app.use(morgan('dev'));
 app.get('/', (req: Request, res: Response): void => {
   const blockchain = new Blockchain();
 
-  blockchain.addBlock(new Block(1, 1, Date.now(), { amount: 10 }));
-  blockchain.addBlock(new Block(2, 2, Date.now(), { amount: 20 }));
+  console.log(`Mining block: 1`);
+  blockchain.addBlock(new Block(1, Date.now(), { amount: 10 }));
+
+  console.log(`Mining block: 2`);
+  blockchain.addBlock(new Block(2, Date.now(), { amount: 20 }));
 
   res.status(200).json({
     status: true,

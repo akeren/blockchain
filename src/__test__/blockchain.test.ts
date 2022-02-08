@@ -29,7 +29,7 @@ describe('Blockchain class', () => {
   });
 
   it('should add a new block with a valid hash', () => {
-    blockchain.addBlock(new Block(1, 1, Date.now(), { amount: 10 }));
+    blockchain.addBlock(new Block(1, Date.now(), { amount: 10 }));
     expect(blockchain.chain[1].hash).toBeTruthy();
   });
 
