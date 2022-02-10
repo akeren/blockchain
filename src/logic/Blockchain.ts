@@ -19,7 +19,11 @@ export class Blockchain {
   }
 
   private static createGenesisBlock(): Block {
-    return new Block(Date.now(), [new Transaction('Genesis address', 2000)], Blockchain.genesisPreviousHash());
+    return new Block(
+      Date.now(),
+      [new Transaction('Genesis', 'Genesis address', 2000)],
+      Blockchain.genesisPreviousHash()
+    );
   }
 
   getBlockchain(): Block[] {
@@ -35,18 +39,22 @@ export class Blockchain {
   }
 
   minePendingTransactions(miningRewardAddress: string): void {
-    const block = new Block(Date.now(), this.pendingTransaction);
+    const block = new Block(Date.now(), this.pendingTransaction, this.getLatestBlock().hash);
     block.mineBlock(this.difficulty);
 
     log.info(`Block successfully mined!`);
     this.chain.push(block);
 
-    this.pendingTransaction = [new Transaction(miningRewardAddress, this.miningReward)];
+    this.pendingTransaction = [new Transaction('Mining Reward', miningRewardAddress, this.miningReward)];
   }
 
   addTransaction(transaction: Transaction): void {
     if (!transaction.fromAddress || !transaction.toAddress || !transaction.amount) {
       throw new Error('Transaction must include fromAddress, toAddress and amount');
+    }
+
+    if (!transaction.isValid()) {
+      throw new Error('Can not add invalid transaction to chain');
     }
 
     this.pendingTransaction.push(transaction);
@@ -85,6 +93,10 @@ export class Blockchain {
     for (let i = 1; i < this.chain.length; i += 1) {
       const currentBlock = this.chain[i];
       const previousBlock = this.chain[i - 1];
+
+      if (!currentBlock.hasValidTransaction()) {
+        return false;
+      }
 
       if (
         Blockchain.isCurrentBlockHashValid(currentBlock) ||

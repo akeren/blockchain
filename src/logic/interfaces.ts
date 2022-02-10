@@ -1,7 +1,13 @@
 export interface ITransaction {
-  fromAddress?: string;
+  fromAddress: string;
   toAddress: string;
   amount: number;
+  signature: string;
+
+  hashTransaction(): string;
+  // eslint-disable-next-line no-unused-vars
+  signTransaction(signingKey: any): void;
+  isValid(): boolean;
 }
 
 export interface IBlock {

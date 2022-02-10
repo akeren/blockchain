@@ -38,4 +38,15 @@ export class Block implements IBlock {
 
     log.info(`Block mined: ${this.hash}`);
   }
+
+  hasValidTransaction(): boolean {
+    // eslint-disable-next-line no-restricted-syntax
+    for (const trx of this.transactions) {
+      if (!trx.isValid()) {
+        return false;
+      }
+    }
+
+    return true;
+  }
 }
