@@ -6,7 +6,7 @@ import config from '@src/config/';
 import { AppError } from '@src/errors/';
 import { globalErrorHandler } from '@src/handlers/globalErrorHandler';
 import { Blockchain } from '@src/logic/Blockchain';
-import { Block } from '@src/logic/Block';
+import { Transaction } from '@src/logic/Transaction';
 
 const app: Express = express();
 
@@ -22,16 +22,25 @@ if (config.app.env === 'development') app.use(morgan('dev'));
 app.get('/', (req: Request, res: Response): void => {
   const blockchain = new Blockchain();
 
-  console.log(`Mining block: 1`);
-  blockchain.addBlock(new Block(1, Date.now(), { amount: 10 }));
+  blockchain.addTransaction(new Transaction('address1', 1000, 'address2'));
+  blockchain.addTransaction(new Transaction('address2', 500, 'address1'));
 
-  console.log(`Mining block: 2`);
-  blockchain.addBlock(new Block(2, Date.now(), { amount: 20 }));
+  console.log(`Miner started!`);
+  blockchain.minePendingTransactions('monique-address');
+  console.log(`Miner finished!`);
+
+  console.log(`Monique balance: ${blockchain.getBalanceOfAddress('monique-address')}`);
+
+  console.log(`Miner started!`);
+  blockchain.minePendingTransactions('monique-address');
+  console.log(`Miner finished!`);
+
+  console.log(`Monique balance: ${blockchain.getBalanceOfAddress('monique-address')}`);
 
   res.status(200).json({
     status: true,
     code: '200',
-    data: blockchain,
+    data: blockchain.getBlockchain(),
   });
 });
 

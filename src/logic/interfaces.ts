@@ -1,8 +1,13 @@
+export interface ITransaction {
+  fromAddress?: string;
+  toAddress: string;
+  amount: number;
+}
+
 export interface IBlock {
-  index: number;
   nonce: number;
   timestamp: number;
-  data: any;
+  transactions: ITransaction[];
   hash: string;
   previousHash?: string;
 
