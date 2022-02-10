@@ -1,6 +1,4 @@
-FROM node:16
-
-RUN npm install -g npm@8.1.3
+FROM node:14
 
 WORKDIR /app
 

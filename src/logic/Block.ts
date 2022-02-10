@@ -1,24 +1,23 @@
 import { createHash } from 'crypto';
 import { IBlock } from '@src/logic/interfaces';
+import { log } from '@src/utils/logger';
+import { Transaction } from '@src/logic/Transaction';
 
 export class Block implements IBlock {
-  public index: number;
-
   public nonce: number;
 
   public timestamp: number;
 
-  public data: any;
+  public transactions: Transaction[];
 
   public hash: string;
 
   public previousHash?: string;
 
-  constructor(index: number, timestamp: number, data: any, previousHash?: string) {
-    this.index = index;
+  constructor(timestamp: number, transactions: Transaction[], previousHash?: string) {
     this.nonce = 0;
     this.timestamp = timestamp;
-    this.data = data;
+    this.transactions = transactions;
     this.previousHash = previousHash;
     this.hash = this.hashBlock();
   }
@@ -26,7 +25,7 @@ export class Block implements IBlock {
   hashBlock(): string {
     const hash = createHash('sha256');
 
-    hash.update(this.index + this.timestamp + JSON.stringify(this.data) + this.previousHash + this.nonce);
+    hash.update(this.timestamp + JSON.stringify(this.transactions) + this.previousHash + this.nonce);
 
     return hash.digest('hex');
   }
@@ -37,6 +36,17 @@ export class Block implements IBlock {
       this.hash = this.hashBlock();
     }
 
-    console.log(`Block mined: ${this.hash}`);
+    log.info(`Block mined: ${this.hash}`);
+  }
+
+  hasValidTransaction(): boolean {
+    // eslint-disable-next-line no-restricted-syntax
+    for (const trx of this.transactions) {
+      if (!trx.isValid()) {
+        return false;
+      }
+    }
+
+    return true;
   }
 }
